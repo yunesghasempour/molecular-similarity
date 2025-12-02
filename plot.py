@@ -1,9 +1,26 @@
 import seaborn as sns
 import matplotlib.pyplot as plt
-from similarity import tanimoto_matrix
+import numpy as np
 
-def heatmap(file_path, hname="heatmap.png",col="plasma"):
-    data = tanimoto_matrix(file_path)
-    plt.figure(figsize=(6, 5))
+def heatmap(data, hname="heatmap.png",col="plasma",l= 25): 
+    plt.figure(figsize=(l, l))
     sns.heatmap(data, annot=True, cmap=col)
     plt.savefig(hname, dpi=300, bbox_inches='tight')
+
+
+
+
+
+
+def tanimoto_hist(data, name):
+    matrix = np.array(data)
+    
+    sims = matrix[np.triu_indices(len(matrix), k=1)]
+
+    plt.figure(figsize=(8,5))
+    plt.hist(sims, bins=20, density=True, alpha=0.7)
+    plt.xlabel("Tanimoto Similarity")
+    plt.ylabel("Density")
+    plt.title("Tanimoto Similarity Distribution (Histogram)")
+    plt.grid(alpha=0.3)
+    plt.savefig(name, dpi=300, bbox_inches='tight')

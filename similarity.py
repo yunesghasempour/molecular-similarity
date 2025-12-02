@@ -10,6 +10,9 @@ def tanimoto_matrix(file_path):
         for j in range(n):
             matrix[i][j] = DataStructs.TanimotoSimilarity(fps[i], fps[j])
 
-    return matrix
+    return matrix 
 
-
+def matrix_length(file_path):
+    fps = fingerprint(file_path)
+    n = len(fps)
+    return n 
