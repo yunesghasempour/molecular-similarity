@@ -1,13 +1,13 @@
 import seaborn as sns
 import matplotlib.pyplot as plt
-import numpy as np
+import numpy as np 
+from sklearn.manifold import MDS
 
-def heatmap(data, hname="heatmap.png",col="plasma",l= 25): 
+def heatmap(data, labels=None,col="plasma", l =25):
     plt.figure(figsize=(l, l))
-    sns.heatmap(data, annot=True, cmap=col)
-    plt.savefig(hname, dpi=300, bbox_inches='tight')
 
-
+    sns.clustermap(data, annot=True, cmap=col, figsize=(l, l))
+    plt.savefig( "plot.png",dpi=300, bbox_inches='tight')
 
 
 

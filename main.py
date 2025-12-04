@@ -1,52 +1,64 @@
-from plot import heatmap , tanimoto_hist
-from similarity import tanimoto_matrix , matrix_length
+from plot import heatmap, tanimoto_hist
+from similarity import tanimoto_matrix, matrix_length
+from welcome import welcome
+from network_plot import similarity_network
 
-#heatmap colors
-cols = ["plasma","magma","inferno","coolwarm","cividis","Greens","Blues","hot"]
+def ask_yes_no(prompt):
+    while True:
+        ans = input(prompt + " (y/n): ").strip().lower()
+        if ans in ["y", "n"]:
+            return ans
+        print("❌ Invalid input! Please enter 'y' or 'n'.")
 
-# creat tanimoto matrix
-file_path  = input("Enter your file please: ")
-data = tanimoto_matrix(file_path)
+def choose_colormap(colors):
+    print("\n🎨 Available colormaps:")
+    for idx, name in enumerate(colors):
+        print(f"  {idx}: {name}")
 
-# generate heatmap 
-l =  matrix_length(file_path)
-print("your file is OK")
-hmi = input("do you want generate heatmap? y/n ")
+    while True:
+        choice = input("Enter colormap number: ").strip()
+        if choice.isdigit() and int(choice) in range(len(colors)):
+            return colors[int(choice)]
+        print("❌ Invalid number!")
 
-if hmi =="y":
+def main():
+    welcome()
 
-    hname = input("enter name for you heatmap(name.png)")
+    # --- Load file ---
+    file_path = input("📁 Enter your file path: ").strip()
+    print("⏳ Processing file...")
 
-    for index, name in enumerate(cols):
-        print(index, name)
+    data = tanimoto_matrix(file_path)
+    length = matrix_length(file_path)
 
-    color = input("Enter a colormap number: ")
-    col=cols[int(color)]
+    print(f"✅ File loaded successfully! Matrix size: {length}x{length}")
 
+    # --- HEATMAP ---
+    if ask_yes_no("Generate heatmap?") == "y":
+        colors = ["plasma","magma","inferno","coolwarm","cividis","Greens","Blues","hot"]
+        cmap = choose_colormap(colors)
+        heatmap(data, cmap)
+        print("🔥 Heatmap generated!")
+    else:
+        print("⚠ Heatmap skipped.")
 
-    heatmap(data,hname,col)
-    print("heatmap generated")   
-elif hmi == "n":
-    print("OK heat map didn't generate")
-else :
-    print("unvalid input")
+    # --- HISTOGRAM ---
+    if ask_yes_no("Generate histogram?") == "y":
+        name = input("Enter output filename (e.g. hist.png): ").strip()
+        tanimoto_hist(data, name)
+        print(f"📊 Histogram saved as: {name}")
+    else:
+        print("⚠ Histogram skipped.")
 
+    # --- NETWORK PLOT ---
+    if ask_yes_no("Generate similarity network?") == "y":
+        similarity_network(data)
+        print("🌐 Network plot generated!")
+    else:
+        print("⚠ Network plot skipped.")
 
- 
+    print("\n🎉 Done!")
 
-
-
-
-hst = input("do you want generate Histogram? y/n ")
-
-if hst =="y":
-
-    name = input("enter name for you Histogram(name.png) ")
-    tanimoto_hist(data,name)
-    print("Histogram generated")   
-elif hst == "n":
-    print("OK Histogram didn't generate")
-else :
-    print("unvalid input")
-
-
+# --- ENTRY POINT ---
+if __name__ == "__main__":
+    main()
